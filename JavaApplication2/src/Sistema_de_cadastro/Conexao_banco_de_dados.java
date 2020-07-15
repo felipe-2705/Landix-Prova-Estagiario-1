@@ -13,7 +13,7 @@ import java.sql.SQLException;
  *
  * @author felip
  */
-public class Conexao_banco_de_dados {
+public class Conexao_banco_de_dados{
    private String url = "jdbc:postgresql://localhost:5432/landix";
    private String usuario = "postgres";
    private String senha = "1234";
@@ -32,6 +32,15 @@ public class Conexao_banco_de_dados {
     e.printStackTrace();
 }   
 }
+   
+   public Connection getConnection(){
+
+       return this.connection;
+       
+   }
+   
+   
+   
 }
 
 
