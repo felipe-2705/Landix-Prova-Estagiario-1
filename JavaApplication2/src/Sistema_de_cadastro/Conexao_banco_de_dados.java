@@ -74,7 +74,26 @@ public class Conexao_banco_de_dados{
         }
          
     }
+   public void EditarVendedor(String nome,int cdtab,Date dtnasc){
    
+     
+       
+       try{
+           
+       PreparedStatement ps =this.connection.prepareStatement("UPDATE bancolandix.vendedores SET \"DSNOME\" = ?,\"CDTAB\" = ?,\"DTNASC\"= ? WHERE \"DSNOME\"="+"\'"+nome+"\'" );
+       ps.setString(1,nome);
+       ps.setInt(2,cdtab);
+       ps.setDate(3,dtnasc );
+       ps.executeUpdate();
+       ps.close();
+       
+       
+       }catch(SQLException ex){
+           
+           ex.printStackTrace();
+       }
+       
+       }
    public void cadastrarCliente(String nome,String idtipo,String CDVEND,double n){
    
        //DecimalFormat df  = new DecimalFormat("##.###############");

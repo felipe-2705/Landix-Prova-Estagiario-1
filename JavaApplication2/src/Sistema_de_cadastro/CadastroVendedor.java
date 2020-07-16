@@ -7,6 +7,8 @@ package Sistema_de_cadastro;
 
 import static Sistema_de_cadastro.Conexao_banco_de_dados.getConexao_banco_de_dados;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -45,7 +47,7 @@ public class CadastroVendedor extends JFrame {
     private JTextField Tnome = new JTextField("");
     private JTextField TcodTab = new JTextField("");
     private JTextField Tdata =  new JTextField("aaaa-mm-dd");
-    private JScrollPane Tcliente = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    private JScrollPane Tcliente=new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     
     //Botoes de Funcoes 
     
@@ -53,21 +55,37 @@ public class CadastroVendedor extends JFrame {
     private JButton btnExcluir = new JButton("Excluir");
     private JButton btnCriarCliente = new JButton("Criar Cliente");
     
+    private boolean vendedorcadastrado = false;
+    
     public CadastroVendedor(){
+        this.configurarFrame();
+        this.ConfiguraComponentes();
+        
+        this.AddComponentes();
+        this.AddBotoes();
+        
+        this.setResizable(false);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+      
+          
+    }
+    
+    private void configurarFrame(){
         this.setTitle("LDXPS");
         this.setBounds(500, 250, 300, 310);
         this.setLayout(new BorderLayout());
         // topo
         this.add(this.titulo,BorderLayout.NORTH);
-        
-        // Centro
+    }
+    
+    private void AddComponentes(){
         GridLayout grid = new GridLayout(4,2,5,10);
         JPanel panel = new JPanel();
         panel.setLayout(grid);  // painel central
         //adicionando componentes ao painel central
         
         panel.add(this.nome);
-        this.Tnome.addFocusListener(new FocusListenerVerificaVendedor(this.Tnome,this.TcodTab,this.Tdata,this.Tcliente));
         panel.add(this.Tnome);
         panel.add(this.codTab);
         panel.add(this.TcodTab);
@@ -76,26 +94,55 @@ public class CadastroVendedor extends JFrame {
         panel.add(this.Clientes);
         panel.add(this.Tcliente);
         this.add(panel,BorderLayout.CENTER); // adiciona o painel ao centro da tela
-        
-        //Inferior
+    }
+    
+    private void ConfiguraComponentes(){
+        int h=20;
+        int w=187;
+        Dimension d = new Dimension(w,h);
+        this.Tnome.setPreferredSize(d);
+        this.Tnome.addFocusListener(new FocusListenerVerificaVendedor(this.Tnome,this.TcodTab,this.Tdata,this.Tcliente));
+        this.TcodTab.setPreferredSize(d);
+        this.Tdata.setPreferredSize(d);
+    }
+    
+    private void AddBotoes(){
         FlowLayout flow = new FlowLayout();
         JPanel  p = new JPanel();
         p.setLayout(flow);
         
         this.btnConfirmar.addActionListener(new ActionListenerConfirmar(this.Tnome,this.TcodTab,this.Tdata));
         p.add(this.btnConfirmar);
+        this.btnCriarCliente.addActionListener(new ActionListenerEditarCliente());
         p.add(this.btnCriarCliente);
         this.btnExcluir.addActionListener(new ActionListenerExcluirVendedor(this.Tnome));
         p.add(this.btnExcluir);
         
         this.add(p,BorderLayout.SOUTH);
-      
-      this.setResizable(false);
-      this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-      this.setVisible(true);
-      
-      
+    }
+    
+    private void AddClientesList(String vendedor){
+        ResultSet rs = getConexao_banco_de_dados().BuscaClientes(vendedor);
+        if(rs == null)return;
+        
+        try{
+             JPanel p = new JPanel();
+             p.setPreferredSize(new Dimension(140,500));
+             p.setBackground(Color.WHITE);
+             
+        while(rs.next()){
+            JButton btncl = new JButton(rs.getString("DSNOME"));
+            btncl.setPreferredSize(new Dimension(140,20));
+            btncl.setBackground(Color.WHITE);
+            btncl.setOpaque(true);
           
+            p.add(btncl);
+            
+        }
+        this.Tcliente.getViewport().add(p);
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
     }
     
     class ActionListenerConfirmar implements ActionListener{
@@ -114,9 +161,15 @@ public class CadastroVendedor extends JFrame {
             int codTab = Integer.parseInt(this.tcodtab.getText());
             Date dat = Date.valueOf(this.tdat.getText());
             Conexao_banco_de_dados con = getConexao_banco_de_dados();
+            if(CadastroVendedor.this.vendedorcadastrado){
+                con.EditarVendedor(nome, codTab, dat);
+                JPanel panel = new JPanel();
+                JOptionPane.showMessageDialog( panel," Vendedor editado com sucesso");
+            }else{
             con.cadastrarVendedor(nome, codTab, dat);
             JPanel panel = new JPanel();
              JOptionPane.showMessageDialog( panel," Vendedor cadastrado com sucesso");
+            }
         }
         
         
@@ -152,22 +205,14 @@ public class CadastroVendedor extends JFrame {
             
             if(resultado == null)
             {
+                CadastroVendedor.this.vendedorcadastrado=false;
                 return;
             }
+            
+            CadastroVendedor.this.vendedorcadastrado=true;
             this.tcodTab.setText(resultado[1]);
             this.tdat.setText(resultado[2]);
-            ResultSet rs = cn.BuscaClientes(this.tnome.getText());
-            try {
-                while(rs.next()){
-                    JTextField t = new JTextField();
-                    t.setEditable(false);
-                    t.setText(rs.getString("DSNOME"));
-                    t.setSize(50,10);
-                    this.tcliente.add(t);
-                }
-            } catch (SQLException ex) {
-               ex.printStackTrace();
-            }
+            CadastroVendedor.this.AddClientesList(this.tnome.getText());
         }
         
     }
@@ -188,6 +233,14 @@ public class CadastroVendedor extends JFrame {
         
     }
     
+     class ActionListenerEditarCliente implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            CadastroCliente c = new CadastroCliente();
+        }
+        
+    }
     
     static public void main(String args[]){
         
