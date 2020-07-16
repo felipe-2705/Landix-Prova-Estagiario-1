@@ -5,6 +5,7 @@
  */
 package Sistema_de_cadastro;
 
+import static Sistema_de_cadastro.Conexao_banco_de_dados.getConexao_banco_de_dados;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -112,7 +113,7 @@ public class CadastroVendedor extends JFrame {
             String nome = this.tnome.getText();
             int codTab = Integer.parseInt(this.tcodtab.getText());
             Date dat = Date.valueOf(this.tdat.getText());
-            Conexao_banco_de_dados con = new Conexao_banco_de_dados();
+            Conexao_banco_de_dados con = getConexao_banco_de_dados();
             con.cadastrarVendedor(nome, codTab, dat);
             JPanel panel = new JPanel();
              JOptionPane.showMessageDialog( panel," Vendedor cadastrado com sucesso");
@@ -128,7 +129,7 @@ public class CadastroVendedor extends JFrame {
         JTextField tcodTab;
         JTextField tdat;
         JScrollPane tcliente;
-        Conexao_banco_de_dados cn = new Conexao_banco_de_dados();
+        Conexao_banco_de_dados cn = getConexao_banco_de_dados();
         
         FocusListenerVerificaVendedor(JTextField nome,JTextField codtab,JTextField dat,JScrollPane Tcliente){
             this.tnome = nome;
@@ -173,7 +174,7 @@ public class CadastroVendedor extends JFrame {
     
     class ActionListenerExcluirVendedor implements ActionListener{
         JTextField nome;
-        Conexao_banco_de_dados cn = new Conexao_banco_de_dados();
+        Conexao_banco_de_dados cn = getConexao_banco_de_dados();
         ActionListenerExcluirVendedor(JTextField vnome){
             this.nome=vnome;
             

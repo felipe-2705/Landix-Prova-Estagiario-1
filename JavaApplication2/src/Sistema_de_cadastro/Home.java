@@ -5,6 +5,7 @@
  */
 package Sistema_de_cadastro;
 
+import static Sistema_de_cadastro.Conexao_banco_de_dados.getConexao_banco_de_dados;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.sql.ResultSet;
@@ -103,7 +104,7 @@ public class Home extends JFrame{
     }
     
     private void BuscaVendedores(){
-        Conexao_banco_de_dados conexao = new Conexao_banco_de_dados();
+        Conexao_banco_de_dados conexao = getConexao_banco_de_dados();
         if(conexao.getConnection()== null){
             System.out.println("Não Foi Possivel Conectar ao Servidor");
             return;
