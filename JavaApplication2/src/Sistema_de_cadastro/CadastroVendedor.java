@@ -64,8 +64,19 @@ public class CadastroVendedor extends JFrame {
         this.AddComponentes();
         this.AddBotoes();
         
-        this.setResizable(false);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setVisible(true);
+      
+          
+    }
+    
+    public CadastroVendedor(String n){
+        this.configurarFrame();
+        this.ConfiguraComponentes();
+        
+        this.AddComponentes();
+        this.AddBotoes();
+        
+        this.Tnome.setText(n);
         this.setVisible(true);
       
           
@@ -75,6 +86,8 @@ public class CadastroVendedor extends JFrame {
         this.setTitle("LDXPS");
         this.setBounds(500, 250, 300, 310);
         this.setLayout(new BorderLayout());
+        this.setResizable(false);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         // topo
         this.add(this.titulo,BorderLayout.NORTH);
     }

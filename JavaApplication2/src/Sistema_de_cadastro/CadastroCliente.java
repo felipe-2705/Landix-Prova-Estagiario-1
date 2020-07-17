@@ -69,13 +69,31 @@ public class CadastroCliente extends JFrame {
         
     }
     
+    public CadastroCliente(String n){
+        
+        this.ConfiguraFrame(); // set tamanho de janela,titulo, Layout
+        
+        this.ConfiguraComponentes();
+        
+        this.AddVendedoresList();
+        
+        this.AddComponentesPrincipais();
+        
+        this.AddBotoes();
+        
+        this.Tnome.setText(n);
+        this.setVisible(true);
+        
+        
+    }
+    
     private void ConfiguraFrame(){
         this.setTitle("LDXPS");
         this.setBounds(500, 250, 400, 310);
         this.setLayout(new BorderLayout());
         
         this.add(this.titulo,BorderLayout.NORTH);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
     
     private void AddComponentesPrincipais(){
@@ -135,6 +153,8 @@ public class CadastroCliente extends JFrame {
         } 
        try{ 
         JPanel p = new JPanel();
+        p.setPreferredSize(new Dimension(180,500));
+        p.setBackground(Color.WHITE);
         this.ListVendedor=new JScrollPane(p,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         while(rs.next()){
             JButton btnvend = new JButton(rs.getString("DSNOME"));
@@ -143,8 +163,6 @@ public class CadastroCliente extends JFrame {
             btnvend.setOpaque(true);
             btnvend.addActionListener(new ActionListenerVendList(btnvend));
             //add action listener aqui 
-            p.setPreferredSize(new Dimension(180,500));
-            p.setBackground(Color.WHITE);
             p.add(btnvend);
             
             

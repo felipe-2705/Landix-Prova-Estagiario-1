@@ -203,13 +203,20 @@ public class Conexao_banco_de_dados{
          
        try{
        Statement s = this.connection.createStatement();
-       ResultSet vend = s.executeQuery("SELECT \"CDVEND\" FROM bancolandix.vendedores WHERE \"DSNOME\" = "+"\'"+vendedor+"\'" );
-       if(vend.next()){
-       String n = vend.getString("CDVEND");
+       ResultSet vend;
+       ResultSet clientes=null;
+       if(vendedor == "TODOS"){
+         clientes = s.executeQuery("SELECT \"DSNOME\",\"IDTIPO\",\"DSLIM\" FROM bancolandix.clientes");
+       }else{
+        vend = s.executeQuery("SELECT \"CDVEND\" FROM bancolandix.vendedores WHERE \"DSNOME\" = "+"\'"+vendedor+"\'" );
+         if(vend.next()){
+          String n = vend.getString("CDVEND");
        
-       ResultSet clientes = s.executeQuery("SELECT \"DSNOME\" FROM bancolandix.clientes WHERE \"CDVEND\" = "+"\'"+n+"\'");
-       return clientes;
+          clientes = s.executeQuery("SELECT \"DSNOME\",\"IDTIPO\",\"DSLIM\" FROM bancolandix.clientes WHERE \"CDVEND\" = "+"\'"+n+"\'");
        }
+         
+       }
+       return clientes;
        }catch(SQLException ex){
            ex.printStackTrace();
        }
